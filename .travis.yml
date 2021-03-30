@@ -1,0 +1,20 @@
+sudo: required
+services:
+  -dockerfile
+
+before install:
+  -docker build -t ajburt/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true ajburt/react-test npm test
+
+after_success:
+  - docker build -t ajburt/multi-client ./client
+  - docker build -t ajburt/multi-nginx ./nginx
+  - docker build -t ajburt/multi-server ./server
+  - docker build -t ajburt/multi-worker ./worker
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  - docker push ajburt/multi-client
+  - docker push ajburt/multi-nginx
+  - docker push ajburt/multi-server
+  - docker push ajburt/multi-worker
