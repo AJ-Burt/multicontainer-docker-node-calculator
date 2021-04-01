@@ -4,7 +4,7 @@ services:
   -dockerfile
 
 before install:
-  -docker build -t ajburt/react-test -f ./client/Dockerfile.dev ./client
+  - docker build -t ajburt/react-test -f ./client/Dockerfile.dev ./client
 
 script:
   - docker run -e CI=true ajburt/react-test npm test
